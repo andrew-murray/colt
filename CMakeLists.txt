@@ -40,6 +40,8 @@ file(COPY ${BOOST_DLLS} DESTINATION ${PROJECT_BINARY_DIR})
 # Add project main executable
 #------------------------------------------------------------------------------
 
+include_directories(${PROJECT_SOURCE_DIR}) 
+
 file(GLOB command_line_template_src
     "colt/src/*.hpp"
     "colt/src/*.h"
