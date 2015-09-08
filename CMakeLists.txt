@@ -24,17 +24,35 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 			 
 add_definitions( -DBOOST_ALL_NO_LIB )
 add_definitions( -DBOOST_ALL_DYN_LINK )
+# add_definitions( -DBOOST_TEST_DYN_LINK )
 find_package(Boost
             1.55.0
             COMPONENTS program_options
 					system
+					unit_test_framework
             REQUIRED)
 
-include_directories(${Boost_INCLUDE_DIR}) 
-link_directories(${BOOST_LIBRARYDIR})
+if(NOT DEFINED Boost_FOUND OR NOT ${Boost_FOUND})
+    message(SEND_ERROR "Failed to find Boost")
+    return()
+endif()
 
-file(GLOB_RECURSE BOOST_DLLS "${BOOST_LIBRARYDIR}/*.dll")
+include_directories(${Boost_INCLUDE_DIR}) 
+
+# Unfortunately, I observed FindBoost seems to set 
+# either Release & Debug or just LibraryDir
+# so link both
+
+link_directories(${Boost_LIBRARYDIR})
+link_directories(${Boost_LIBRARY_DIR_RELEASE})
+link_directories(${Boost_LIBRARY_DIR_DEBUG})
+
+file(GLOB BOOST_DLLS "${Boost_LIBRARYDIR}/*.dll")
 file(COPY ${BOOST_DLLS} DESTINATION ${PROJECT_BINARY_DIR})
+file(GLOB BOOST_DLLS_RELEASE "${Boost_LIBRARY_DIR_RELEASE}/*.dll")
+file(COPY ${BOOST_DLLS_RELEASE} DESTINATION ${PROJECT_BINARY_DIR})
+file(GLOB BOOST_DLLS_DEBUG "${Boost_LIBRARY_DIR_debug}/*.dll")
+file(COPY ${BOOST_DLLS_DEBUG} DESTINATION ${PROJECT_BINARY_DIR})
 
 #------------------------------------------------------------------------------
 # Add project main executable
@@ -49,9 +67,7 @@ file(GLOB command_line_template_src
 )
 
 add_executable(${PROJECT_NAME} ${command_line_template_src})
-
-# currently use boost header-only
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOST_SYSTEM_LIBRARY})
 
 #------------------------------------------------------------------------------
 # Add project test executable
@@ -64,9 +80,7 @@ file(GLOB command_line_template_test
 )
 
 add_executable("${PROJECT_NAME}_test" ${command_line_template_test})
-
-# currently use boost header-only
-target_link_libraries("${PROJECT_NAME}_test" ${Boost_LIBRARIES})
+target_link_libraries("${PROJECT_NAME}_test" ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOST_SYSTEM_LIBRARY})
 
 
 		
