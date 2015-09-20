@@ -60,14 +60,14 @@ file(COPY ${BOOST_DLLS_DEBUG} DESTINATION ${PROJECT_BINARY_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}) 
 
-file(GLOB command_line_template_src
-    "colt/src/*.hpp"
-    "colt/src/*.h"
-    "colt/src/*.cpp"
+file(GLOB command_line_template_example
+    "colt/example/*.hpp"
+    "colt/example/*.h"
+    "colt/example/*.cpp"
 )
 
-add_executable(${PROJECT_NAME} ${command_line_template_src})
-target_link_libraries(${PROJECT_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOST_SYSTEM_LIBRARY})
+add_executable(${PROJECT_NAME}_example ${command_line_template_example})
+target_link_libraries(${PROJECT_NAME}_example ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOST_SYSTEM_LIBRARY})
 
 #------------------------------------------------------------------------------
 # Add project test executable

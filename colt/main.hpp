@@ -4,11 +4,14 @@ namespace po = boost::program_options;
 
 #include "colt/command.hpp"
 
-int main(int argc, const char* argv[])
-{
-	try{
-		const char* command_argument = "command";
+namespace colt {
 
+	int main(
+		int argc, 
+		const char* argv[], 
+		const std::vector<std::unique_ptr<colt::command>>& available_commands)
+	{
+		const char* command_argument = "command";
 
 		po::options_description global("Global options");
 		global.add_options()
@@ -43,26 +46,15 @@ int main(int argc, const char* argv[])
 
 		const std::string selected_command = variable_map[command_argument].as<std::string>();
 
-		auto make_unique_command = [](colt::command* implicitly_converted)
-		{
-			return std::unique_ptr<colt::command>( implicitly_converted );
-		};
-
-		const std::unique_ptr<colt::command> available_commands[] = {
-			make_unique_command( new example_command )
-		};
-
-		auto available_commands_end = available_commands + sizeof(available_commands) / sizeof(std::unique_ptr<colt::command>);
-
 		auto found_command = std::find_if(
-			available_commands, 
-			available_commands_end,
+			available_commands.begin(), 
+			available_commands.end(),
 			[&](const std::unique_ptr<colt::command>& comm){
 				return comm->name() == selected_command;
 			}
 		);
 
-		if( found_command == available_commands_end)
+		if( found_command == available_commands.end())
 		{
 			std::cout << "we don't recognize the command" << std::endl;
 			// output help about not recognizing selected_command
@@ -84,11 +76,7 @@ int main(int argc, const char* argv[])
 			parser = parser.allow_unregistered();
 		}
 		po::store(parser.run(), sub_variables);
-		(*command_object)(sub_variables);
-	}
-	catch(std::exception& e)
-	{
-		std::cerr << "Uncaught exception : " << e.what() << std::endl;
+		return (*command_object)(sub_variables);
 	}
 
 }
