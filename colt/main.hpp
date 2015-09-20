@@ -4,6 +4,8 @@ namespace po = boost::program_options;
 
 #include "colt/command.hpp"
 
+#include "colt/src/help.hpp"
+
 namespace colt {
 
 	int main(
@@ -36,13 +38,10 @@ namespace colt {
 	
 		if(variable_map.count(command_argument) == 0)
 		{
-			// no arguments provided
-
-			// output help listing commands
-			// (note: this can't be the normal boost::po help)
-			return 0;
+			const int command_error = 1;
+			std::cout << help::contents(available_commands) << std::flush;
+			return command_error;
 		}
-
 
 		const std::string selected_command = variable_map[command_argument].as<std::string>();
 

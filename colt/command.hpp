@@ -1,7 +1,3 @@
-#ifdef _MSC_VER
-#pragma once
-#endif
-
 #ifndef __COLT__COMMAND__HPP__
 #define __COLT__COMMAND__HPP__
 
