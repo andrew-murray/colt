@@ -1,4 +1,5 @@
-#include "colt/main.hpp"
+#include <colt/main.hpp>
+#include "colt/example/example_command.hpp"
 
 int main(int argc, const char** argv)
 {
