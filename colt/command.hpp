@@ -26,7 +26,7 @@ namespace colt {
 class example_command : public colt::command 
 {
 	virtual std::string name() const { return "example"; }
-	virtual std::string description() const { return "I don't really exist."; }
+	virtual std::string description() const { return "I don't really exist. but I am a fucking long string and I better be split up properly"; }
 
 	virtual bool allow_unregistered() const { return true; }
 

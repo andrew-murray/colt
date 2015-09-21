@@ -43,6 +43,41 @@ namespace colt {
 			return output_vector;
 		}
 
+		inline std::vector<std::string> combine(
+			const std::vector<std::string>& input_keys, 
+			const std::vector<std::string>& input_vals,
+			const int max_length
+			)
+		{
+			std::vector<std::string> output_vector;
+			output_vector.reserve(input_keys.size());
+			const std::string indent( input_keys.front().size(), ' ' );
+			for(int i = 0; i < input_keys.size(); ++i)
+			{
+				const std::string& input_val = input_vals[i];
+
+				// another approach here, would be to automatically redistribute
+				// words to lines
+
+				// this might annoy people?
+
+				// std::vector<std::string> out_strings;
+				// std::vector<std::string> words = boost::split(
+				//	out_strings, 
+				//	input_val, 
+				//	[](const char& c){return std::isspace(c, std::locale());}
+				// );
+
+				for(int string_start = 0; string_start < input_val.size(); string_start += max_length)
+				{
+					const std::string key_string = string_start == 0 ? input_keys[i] : indent;
+					const std::string sub_string = input_val.substr( string_start, max_length );
+					output_vector.push_back( key_string + sub_string );
+				}
+			}
+			return output_vector;
+		}
+
 		inline std::string contents(const std::vector<std::unique_ptr<colt::command>>& commands)
 		{
 			std::vector<std::string> command_names;
@@ -63,15 +98,17 @@ namespace colt {
 			command_names = normalise(command_names, 14);
 			command_descriptions = normalise(command_descriptions, boost::none);
 
+			std::vector<std::string> combined_strings = combine( command_names, command_descriptions, 60);
+
 			std::stringstream output_stream;
 			const std::string indent(2,' ');
 			output_stream << "available commands:\n\n";
-			for(int i = 0; i < commands.size(); ++i)
+			for(int i = 0; i < combined_strings.size(); ++i)
 			{
 				output_stream 
 					<< indent 
-					<< command_names[i]  
-					<< command_descriptions[i] << '\n';
+					<< combined_strings[i]
+					<< '\n';
 			}
 			return output_stream.str();
 		}
