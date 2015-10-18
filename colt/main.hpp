@@ -3,8 +3,7 @@
 namespace po = boost::program_options;
 
 #include <colt/command.hpp>
-
-#include <colt/src/help.hpp>
+#include <colt/help.hpp>
 
 namespace colt {
 
